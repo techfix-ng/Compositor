@@ -1,23 +1,42 @@
 name: Build Compositor Windows
+
 on:
   push:
     branches: [windows-port]
     paths: ["windows/**", ".github/workflows/windows-build.yml"]
   workflow_dispatch:
+
 permissions:
-  contents: read
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
-        with: { dotnet-version: "8.0.x" }
-      - run: choco install innosetup --no-progress -y
-      - shell: powershell
+        with:
+          dotnet-version: "8.0.x"
+      - name: Install Inno Setup
+        shell: powershell
+        run: choco install innosetup --no-progress -y
+      - name: Build application and installer
+        shell: powershell
         run: ./windows/build.ps1
       - uses: actions/upload-artifact@v4
         with:
           name: Compositor-Windows-Setup
           path: windows/artifacts/*.exe
           if-no-files-found: error
+      - name: Publish public direct-download installer
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "windows-v0.1.0"
+          $installer = Get-ChildItem "windows/artifacts/*.exe" | Select-Object -First 1
+          gh release view $tag --repo "${{ github.repository }}" 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --repo "${{ github.repository }}" --target "${{ github.sha }}" --title "Compositor for Windows 0.1.0" --notes "First native Windows foundation build. Includes the Windows editor shell, raster image opening, initial PSD/PSB recognition, and the standard Windows installer."
+          }
+          gh release upload $tag $installer.FullName --repo "${{ github.repository }}" --clobber
