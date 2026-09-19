@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -28,19 +28,3 @@ jobs:
           name: Compositor-Windows-Setup
           path: windows/artifacts/*.exe
           if-no-files-found: error
-      - name: Publish public direct-download installer
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          installer="$(find windows/artifacts -maxdepth 1 -name '*.exe' -print -quit)"
-          tag="windows-v0.1.0"
-          if gh release view "$tag" --repo "${{ github.repository }}" >/dev/null 2>&1; then
-            gh release upload "$tag" "$installer" --repo "${{ github.repository }}" --clobber
-          else
-            gh release create "$tag" "$installer" \
-              --repo "${{ github.repository }}" \
-              --target "${{ github.sha }}" \
-              --title "Compositor for Windows 0.1.0" \
-              --notes "First native Windows foundation build. Includes the Windows editor shell, raster image opening, initial PSD/PSB recognition, and the standard Windows installer."
-          fi

@@ -1,1 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="..\Compositor.Core\Compositor.Core.csproj" /></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Compositor.Core\Compositor.Core.csproj" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.17.1" />
+  </ItemGroup>
+</Project>
