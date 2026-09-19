@@ -1,5 +1,5 @@
 #define MyAppName "Compositor"
-#define MyAppVersion "0.1.0"
+#define MyAppVersion "0.2.0-dev.1"
 [Setup]
 AppId={{3C4D599C-ABBA-47C4-B76E-64C42B956557}
 AppName={#MyAppName}

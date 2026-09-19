@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -25,6 +25,22 @@ jobs:
         run: ./windows/build.ps1
       - uses: actions/upload-artifact@v4
         with:
-          name: Compositor-Windows-Setup
+          name: Compositor-Windows-Development-Setup
           path: windows/artifacts/*.exe
           if-no-files-found: error
+      - name: Publish development preview
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          installer="$(find windows/artifacts -maxdepth 1 -name '*.exe' -print -quit)"
+          tag="windows-v0.2.0-dev.1"
+          if gh release view "$tag" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$tag" "$installer" --repo "${{ github.repository }}" --clobber
+          else
+            gh release create "$tag" "$installer" --prerelease \
+              --repo "${{ github.repository }}" \
+              --target "${{ github.sha }}" \
+              --title "Compositor for Windows 0.2.0 Development Preview 1" \
+              --notes "Development preview: PSD composite preview, PSD layer discovery, full tool-shell UI, initial editable text tool, installed-font picker, and interactive text-layer visibility. This is not a finished production release."
+          fi
