@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="..\Compositor.Core\Compositor.Core.csproj" /></ItemGroup></Project>

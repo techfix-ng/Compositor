@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><OutputType>WinExe</OutputType><UseWPF>true</UseWPF><RuntimeIdentifier>win-x64</RuntimeIdentifier><SelfContained>true</SelfContained><AssemblyName>Compositor</AssemblyName></PropertyGroup>
+ <ItemGroup><ProjectReference Include="..\Compositor.Core\Compositor.Core.csproj"/><ProjectReference Include="..\Compositor.Psd\Compositor.Psd.csproj"/></ItemGroup>
+</Project>

@@ -1,0 +1,23 @@
+name: Build Compositor Windows
+on:
+  push:
+    branches: [windows-port]
+    paths: ["windows/**", ".github/workflows/windows-build.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "8.0.x" }
+      - run: choco install innosetup --no-progress -y
+      - shell: powershell
+        run: ./windows/build.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Compositor-Windows-Setup
+          path: windows/artifacts/*.exe
+          if-no-files-found: error
