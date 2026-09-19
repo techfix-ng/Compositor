@@ -34,8 +34,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           installer="$(find windows/artifacts -maxdepth 1 -name '*.exe' -print -quit)"
-          gh release create windows-v0.1.0 "$installer" \
-            --repo "${{ github.repository }}" \
-            --target "${{ github.sha }}" \
-            --title "Compositor for Windows 0.1.0" \
-            --notes "First native Windows foundation build. Includes the Windows editor shell, raster image opening, initial PSD/PSB recognition, and the standard Windows installer."
+          tag="windows-v0.1.0"
+          if gh release view "$tag" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$tag" "$installer" --repo "${{ github.repository }}" --clobber
+          else
+            gh release create "$tag" "$installer" \
+              --repo "${{ github.repository }}" \
+              --target "${{ github.sha }}" \
+              --title "Compositor for Windows 0.1.0" \
+              --notes "First native Windows foundation build. Includes the Windows editor shell, raster image opening, initial PSD/PSB recognition, and the standard Windows installer."
+          fi
