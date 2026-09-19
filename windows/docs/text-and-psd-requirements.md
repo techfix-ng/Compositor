@@ -31,6 +31,32 @@ The Windows edition must provide Photoshop-style editable text. The Type tool is
 - Anti-aliasing modes
 - Text color, including formatting selected ranges
 
+## PSD font discovery and resolution
+
+PSD files normally reference fonts but do not contain installable font files. For every imported text layer, Compositor must preserve and inspect the PSD font descriptor, including PostScript name, family, style, weight and stretch where available.
+
+Resolution order:
+
+1. Exact installed PostScript/full-face name.
+2. Exact installed family plus style, weight and stretch.
+3. Normalized family alias plus the nearest matching face.
+4. User-selected replacement from the installed Windows font catalog.
+5. Rendered PSD composite fallback when no editable match is available.
+
+Requirements:
+
+- Enumerate fonts installed for all users and the current Windows user.
+- Refresh the font catalog when Windows reports a font change.
+- Resolve every distinct font run within a text layer, not only the first font.
+- Mark missing fonts on both the text layer and the Character panel.
+- Show the original missing font name and the proposed replacement.
+- Allow replace-once, replace-in-document and replace-all choices.
+- Never silently substitute or permanently overwrite the original PSD font identity.
+- Store the original descriptor alongside any local substitution so reopening on another computer can resolve it again.
+- Do not copy, extract or redistribute commercial font files.
+- Preserve the PSD composite appearance as a visual fallback until the user chooses a replacement.
+- Reflow paragraph text only after the user accepts a substitution because font metrics may change line breaks.
+
 ## Paragraph controls
 
 - Left, center, right and justified alignment
@@ -78,3 +104,4 @@ Do not publish the next user-facing installer until:
 3. Supported PSD text layers appear in the real Layers panel.
 4. Missing or unsupported fonts/features show a warning and visual fallback instead of a blank canvas.
 5. Raster export correctly includes every visible text layer.
+6. PSD fonts are checked against the local Windows font catalog using the resolution order above.
