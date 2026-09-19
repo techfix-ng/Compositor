@@ -38,7 +38,7 @@ public static class PsdDocumentReader
                 checked((int)image.Width),
                 checked((int)image.Height),
                 true,
-                image.HasAlpha ? image.Opacity.ToDouble() : 1.0,
+                1.0,
                 image.Compose.ToString());
         }).ToArray();
 
